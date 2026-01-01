@@ -10,7 +10,7 @@
 
   onMount(async () => {
     try {
-      const response = await fetch(`${import.meta.env.BASE_URL}rawRows.json`)
+      const response = await fetch(`${import.meta.env.BASE_URL}hotwheels.json`)
       if (!response.ok) {
         throw new Error(`Failed to load data (${response.status})`)
       }
@@ -26,9 +26,9 @@
   $: visibleRows = rows
     .filter((row) => {
       if (!normalizedQuery) return true
-      const name = (row.name ?? '').toString().toLowerCase()
-      const toyNumber = (row['Toy #'] ?? '').toString().toLowerCase()
-      return name.startsWith(normalizedQuery) || toyNumber.startsWith(normalizedQuery)
+      const name = (row.Name ?? '').toString().toLowerCase()
+      const toyNumber = (row.Number ?? '').toString().toLowerCase()
+      return name.includes(normalizedQuery) || toyNumber.startsWith(normalizedQuery)
     })
     .slice(0, 20)
 </script>
@@ -56,27 +56,18 @@
         <table>
           <thead>
             <tr>
+              <th>Number</th>
               <th>Name</th>
-              <th>Toy #</th>
               <th>Year</th>
-              <th>Series</th>
               <th>Color</th>
             </tr>
           </thead>
           <tbody>
             {#each visibleRows as row}
               <tr>
-                <td data-label="Name">
-                  <div class="name-cell">
-                    <span class="name">{row.name}</span>
-                    {#if row['Col #']}
-                      <span class="badge">Col {row['Col #']}</span>
-                    {/if}
-                  </div>
-                </td>
-                <td class="mono" data-label="Toy #">{row['Toy #']}</td>
+                <td data-label="Name">{row.Name}</td>
+                <td class="mono" data-label="Number">{row.Number}</td>
                 <td data-label="Year">{row.Year}</td>
-                <td data-label="Series">{row.Series}</td>
                 <td data-label="Color">{row.Color}</td>
               </tr>
             {/each}
